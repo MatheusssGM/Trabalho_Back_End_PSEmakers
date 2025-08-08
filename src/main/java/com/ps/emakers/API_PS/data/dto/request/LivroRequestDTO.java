@@ -1,6 +1,8 @@
 package com.ps.emakers.API_PS.data.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -13,7 +15,7 @@ public record LivroRequestDTO(
         @NotBlank(message = "Autor obrigatório")
         String autor,
 
-        @NotBlank(message = "Data de lançamento obrigatório")
+        @NotNull(message = "Data de lançamento obrigatória")
         LocalDate dataLancamento
 ) {
 }

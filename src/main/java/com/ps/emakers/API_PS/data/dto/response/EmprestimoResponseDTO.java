@@ -15,9 +15,11 @@ public record EmprestimoResponseDTO(
 
         Livro livro,
 
-        LocalDate dataEmprestimo
+        LocalDate dataEmprestimo,
+
+        String situacao
 ) {
     public EmprestimoResponseDTO(Emprestimo emprestimo){
-        this(emprestimo.getIdEmprestimo(),emprestimo.getPessoa(),emprestimo.getLivro(),emprestimo.getDataEmprestimo());
+        this(emprestimo.getIdEmprestimo(),emprestimo.getPessoa(),emprestimo.getLivro(),emprestimo.getDataEmprestimo(),emprestimo.getSituacao());
     }
 }

@@ -2,6 +2,7 @@ package com.ps.emakers.API_PS.data.entity;
 
 import com.ps.emakers.API_PS.data.dto.request.LivroRequestDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Livro {
     private String autor;
 
     @Column (name = "data_lancamento", nullable = false)
+    @Past
     private LocalDate dataLancamento;
 
     @Builder

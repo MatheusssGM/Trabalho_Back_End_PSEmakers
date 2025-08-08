@@ -36,6 +36,8 @@ public class PessoaService {
         pessoa.setEmail(pessoaRequestDTO.email());
         pessoa.setSenha(pessoaRequestDTO.senha());
 
+        pessoaRepository.save(pessoa);
+
         return new PessoaResponseDTO(pessoa);
     }
 

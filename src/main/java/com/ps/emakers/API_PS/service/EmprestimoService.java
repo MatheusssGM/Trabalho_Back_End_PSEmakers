@@ -1,12 +1,19 @@
 package com.ps.emakers.API_PS.service;
 
 import com.ps.emakers.API_PS.data.dto.request.EmprestimoRequestDTO;
+import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.EmprestimoResponseDTO;
 import com.ps.emakers.API_PS.data.entity.Emprestimo;
+import com.ps.emakers.API_PS.data.entity.Livro;
+import com.ps.emakers.API_PS.data.entity.Pessoa;
 import com.ps.emakers.API_PS.repository.EmprestimoRepository;
+import com.ps.emakers.API_PS.repository.LivroRepository;
+import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +22,12 @@ public class EmprestimoService {
 
     @Autowired
     private EmprestimoRepository emprestimoRepository;
+
+    @Autowired
+    private PessoaRepository pessoaRepository;
+
+    @Autowired
+    private LivroRepository livroRepository;
 
     public List<EmprestimoResponseDTO> getAllEmprestimo(){
         List<Emprestimo> Emprestimos = emprestimoRepository.findAll();
@@ -30,9 +43,13 @@ public class EmprestimoService {
 
     public EmprestimoResponseDTO createEmprestimo(EmprestimoRequestDTO emprestimoRequestDTO){
         Emprestimo emprestimo = new Emprestimo(emprestimoRequestDTO);
-        emprestimo.setPessoa(emprestimoRequestDTO.pessoa());
-        emprestimo.setLivro(emprestimoRequestDTO.livro());
-        emprestimo.setDataEmprestimo(emprestimoRequestDTO.dataEmprestimo());
+        Pessoa pessoa = getPessoaEntityById(emprestimoRequestDTO.pessoa());
+        emprestimo.setPessoa(pessoa);
+        Livro livro = getLivroEntityById(emprestimoRequestDTO.livro());
+        emprestimo.setLivro(livro);
+        LocalDate dataEmprestimo = LocalDate.now();
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        emprestimo.setSituacao(emprestimoRequestDTO.situacao());
 
         emprestimoRepository.save(emprestimo);
 
@@ -42,9 +59,13 @@ public class EmprestimoService {
     public EmprestimoResponseDTO updateEmprestimo(Long idEmprestimo, EmprestimoRequestDTO emprestimoRequestDTO){
         Emprestimo emprestimo = getEmprestimoEntityById(idEmprestimo);
 
-        emprestimo.setPessoa(emprestimoRequestDTO.pessoa());
-        emprestimo.setLivro(emprestimoRequestDTO.livro());
-        emprestimo.setDataEmprestimo(emprestimoRequestDTO.dataEmprestimo());
+        Pessoa pessoa = getPessoaEntityById(emprestimoRequestDTO.pessoa());
+        emprestimo.setPessoa(pessoa);
+        Livro livro = getLivroEntityById(emprestimoRequestDTO.livro());
+        emprestimo.setLivro(livro);
+        LocalDate dataEmprestimo = LocalDate.now();
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        emprestimo.setSituacao(emprestimoRequestDTO.situacao());
 
         emprestimoRepository.save(emprestimo);
 
@@ -60,5 +81,13 @@ public class EmprestimoService {
 
     private Emprestimo getEmprestimoEntityById(Long idEmprestimo){
         return emprestimoRepository.findById(idEmprestimo).orElseThrow(()-> new RuntimeException("Emprestimo não encontrado"));
+    }
+
+    private Pessoa getPessoaEntityById(Long idPessoa){
+        return pessoaRepository.findById(idPessoa).orElseThrow(()-> new RuntimeException("Pessoa não encontrada"));
+    }
+
+    private Livro getLivroEntityById(Long idLivro){
+        return livroRepository.findById(idLivro).orElseThrow(()-> new RuntimeException("Livro não encontrado"));
     }
 }
