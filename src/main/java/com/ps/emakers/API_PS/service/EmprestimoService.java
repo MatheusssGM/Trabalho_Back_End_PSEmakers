@@ -1,16 +1,15 @@
 package com.ps.emakers.API_PS.service;
 
 import com.ps.emakers.API_PS.data.dto.request.EmprestimoRequestDTO;
-import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.EmprestimoResponseDTO;
 import com.ps.emakers.API_PS.data.entity.Emprestimo;
 import com.ps.emakers.API_PS.data.entity.Livro;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
+import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
 import com.ps.emakers.API_PS.repository.EmprestimoRepository;
 import com.ps.emakers.API_PS.repository.LivroRepository;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -80,14 +79,14 @@ public class EmprestimoService {
     }
 
     private Emprestimo getEmprestimoEntityById(Long idEmprestimo){
-        return emprestimoRepository.findById(idEmprestimo).orElseThrow(()-> new RuntimeException("Emprestimo não encontrado"));
+        return emprestimoRepository.findById(idEmprestimo).orElseThrow(()-> new EntityNotFoundException(idEmprestimo));
     }
 
     private Pessoa getPessoaEntityById(Long idPessoa){
-        return pessoaRepository.findById(idPessoa).orElseThrow(()-> new RuntimeException("Pessoa não encontrada"));
+        return pessoaRepository.findById(idPessoa).orElseThrow(()-> new EntityNotFoundException(idPessoa));
     }
 
     private Livro getLivroEntityById(Long idLivro){
-        return livroRepository.findById(idLivro).orElseThrow(()-> new RuntimeException("Livro não encontrado"));
+        return livroRepository.findById(idLivro).orElseThrow(()-> new EntityNotFoundException(idLivro));
     }
 }
