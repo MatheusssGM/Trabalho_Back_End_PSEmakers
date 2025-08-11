@@ -75,7 +75,7 @@ public class EmprestimoService {
         Emprestimo emprestimo = getEmprestimoEntityById(idEmprestimo);
         emprestimoRepository.delete(emprestimo);
 
-        return "Emprestimo id:" + idEmprestimo + "deletado com sucesso!";
+        return "Emprestimo id: " + idEmprestimo + " deletado com sucesso!";
     }
 
     private Emprestimo getEmprestimoEntityById(Long idEmprestimo){
