@@ -2,7 +2,6 @@ package com.ps.emakers.API_PS.data.entity;
 
 import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +27,21 @@ public class Pessoa {
 
     @Column (name = "cep", nullable = false, length = 9)
     private String cep;
+
+    @Column(name = "logradouro", length = 100)
+    private String logradouro;
+
+    @Column(name = "complemento", length = 100)
+    private String complemento;
+
+    @Column(name = "bairro", length = 100)
+    private String bairro;
+
+    @Column(name = "localidade", length = 100)
+    private String localidade;
+
+    @Column(name = "uf", length = 2)
+    private String uf;
 
     @Column (name = "email", nullable = false, length = 100)
     private String email;

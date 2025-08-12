@@ -14,10 +14,17 @@ public record PessoaResponseDTO(
 
         String email,
 
-        String senha
+        String logradouro,
+
+        String bairro,
+
+        String localidade,
+
+        String uf
+
 
 ) {
     public PessoaResponseDTO(Pessoa pessoa) {
-        this(pessoa.getIdPessoa(), pessoa.getName(), pessoa.getCpf(), pessoa.getCep(), pessoa.getEmail(), pessoa.getSenha());
+        this(pessoa.getIdPessoa(), pessoa.getName(), pessoa.getCpf(), pessoa.getCep(), pessoa.getEmail(),pessoa.getLogradouro(), pessoa.getBairro(), pessoa.getLocalidade(),  pessoa.getUf());
     }
 }
