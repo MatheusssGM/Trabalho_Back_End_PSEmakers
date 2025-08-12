@@ -20,6 +20,7 @@ CREATE TABLE livro
     autor           VARCHAR(100)                            NOT NULL,
     data_lancamento date                                    NOT NULL,
     nome            VARCHAR(100)                            NOT NULL,
+    quantidade      int,
     CONSTRAINT livro_pkey PRIMARY KEY (id_livro)
 );
 

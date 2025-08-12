@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,14 +31,19 @@ public class LivroService {
     }
 
     public LivroResponseDTO createLivro(LivroRequestDTO livroRequestDTO){
-        Livro livro = new Livro(livroRequestDTO);
-        livro.setName(livroRequestDTO.name());
-        livro.setAutor(livroRequestDTO.autor());
-        livro.setDataLancamento(livroRequestDTO.dataLancamento());
+        Optional<Livro> livroExistente = livroRepository.findByNameAndAutor(livroRequestDTO.name(), livroRequestDTO.autor());
 
-        livroRepository.save(livro);
-
-        return new LivroResponseDTO(livro);
+        if (livroExistente.isPresent()) {
+            Livro livro = livroExistente.get();
+            livro.setQuantidade(livro.getQuantidade() + 1);
+            livroRepository.save(livro);
+            return new LivroResponseDTO(livro);
+        } else {
+            Livro livro = new Livro(livroRequestDTO);
+            livro.setQuantidade(1);
+            livroRepository.save(livro);
+            return new LivroResponseDTO(livro);
+        }
     }
 
     public LivroResponseDTO updateLivro(Long idLivro, LivroRequestDTO livroRequestDTO){

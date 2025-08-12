@@ -31,6 +31,9 @@ public class Livro {
     @Past
     private LocalDate dataLancamento;
 
+    @Column (name = "quantidade")
+    private int quantidade;
+
     @Builder
     public Livro(LivroRequestDTO livroRequestDTO) {
         this.name = livroRequestDTO.name();
