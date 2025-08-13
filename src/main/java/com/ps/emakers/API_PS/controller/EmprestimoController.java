@@ -28,9 +28,14 @@ public class EmprestimoController {
         return ResponseEntity.status(HttpStatus.OK).body(emprestimoService.getEmprestimoById(idEmprestimo));
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/createEmp")
     public ResponseEntity<EmprestimoResponseDTO> createEmprestimo(@Valid @RequestBody EmprestimoRequestDTO emprestimoRequestDTO){
         return ResponseEntity.status(HttpStatus.OK).body(emprestimoService.createEmprestimo(emprestimoRequestDTO));
+    }
+
+    @PostMapping(value = "/createDev/{idEmprestimo}")
+    public ResponseEntity<EmprestimoResponseDTO> createDevolucao(@Valid @PathVariable Long idEmprestimo){
+        return ResponseEntity.status(HttpStatus.OK).body(emprestimoService.createDevolucao(idEmprestimo));
     }
 
     @PutMapping(value = "/update/{idEmprestimo}")

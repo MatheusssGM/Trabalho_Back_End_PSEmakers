@@ -2,15 +2,11 @@ package com.ps.emakers.API_PS.data.entity;
 
 import com.ps.emakers.API_PS.data.dto.request.EmprestimoRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.aspectj.lang.annotation.Before;
 
 import java.time.LocalDate;
 
@@ -42,9 +38,11 @@ public class Emprestimo {
 
     @Builder
     public Emprestimo(EmprestimoRequestDTO emprestimoRequestDTO) {
-        this.pessoa = new Pessoa();
-        this.livro = new Livro();
-        this.dataEmprestimo = emprestimoRequestDTO.dataEmprestimo();
-        this.situacao = emprestimoRequestDTO.situacao();
+        Pessoa pessoa1 = new Pessoa();
+        pessoa1.setIdPessoa(emprestimoRequestDTO.pessoa());
+        this.pessoa = pessoa1;
+        Livro livro1 = new Livro();
+        livro1.setIdLivro(emprestimoRequestDTO.livro());
+        this.livro = livro1;
     }
 }

@@ -12,10 +12,12 @@ public record LivroResponseDTO(
 
         String autor,
 
-        LocalDate dataLancamento
+        LocalDate dataLancamento,
+
+        int quantidade
 
 ) {
     public LivroResponseDTO(Livro livro){
-        this(livro.getIdLivro(), livro.getName(),livro.getAutor(),livro.getDataLancamento());
+        this(livro.getIdLivro(), livro.getName(),livro.getAutor(),livro.getDataLancamento(), livro.getQuantidade());
     }
 }

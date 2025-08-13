@@ -22,7 +22,6 @@ public record PessoaResponseDTO(
 
         String uf
 
-
 ) {
     public PessoaResponseDTO(Pessoa pessoa) {
         this(pessoa.getIdPessoa(), pessoa.getName(), pessoa.getCpf(), pessoa.getCep(), pessoa.getEmail(),pessoa.getLogradouro(), pessoa.getBairro(), pessoa.getLocalidade(),  pessoa.getUf());

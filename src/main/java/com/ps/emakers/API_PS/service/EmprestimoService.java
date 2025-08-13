@@ -5,7 +5,9 @@ import com.ps.emakers.API_PS.data.dto.response.EmprestimoResponseDTO;
 import com.ps.emakers.API_PS.data.entity.Emprestimo;
 import com.ps.emakers.API_PS.data.entity.Livro;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
+import com.ps.emakers.API_PS.exceptions.general.EmprestimoReturnException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
+import com.ps.emakers.API_PS.exceptions.general.LivroNotFoundException;
 import com.ps.emakers.API_PS.repository.EmprestimoRepository;
 import com.ps.emakers.API_PS.repository.LivroRepository;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
@@ -46,9 +48,30 @@ public class EmprestimoService {
         emprestimo.setPessoa(pessoa);
         Livro livro = getLivroEntityById(emprestimoRequestDTO.livro());
         emprestimo.setLivro(livro);
+
+        if (livro.getQuantidade() <= 0){
+            throw new LivroNotFoundException(livro.getIdLivro());
+        }
+        livro.setQuantidade(livro.getQuantidade() - 1);
+        livroRepository.save(livro);
         LocalDate dataEmprestimo = LocalDate.now();
         emprestimo.setDataEmprestimo(dataEmprestimo);
-        emprestimo.setSituacao(emprestimoRequestDTO.situacao());
+        emprestimo.setSituacao("Pendente");
+        emprestimoRepository.save(emprestimo);
+
+        return new EmprestimoResponseDTO(emprestimo);
+    }
+
+    public EmprestimoResponseDTO createDevolucao(Long idEmprestimo){
+        Emprestimo emprestimo = getEmprestimoEntityById(idEmprestimo);
+        if (emprestimo.getSituacao().equals("Devolvido")){
+            throw new EmprestimoReturnException(idEmprestimo);
+        }
+        Livro livro = emprestimo.getLivro();
+        livro.setQuantidade(livro.getQuantidade() + 1);
+        livroRepository.save(livro);
+
+        emprestimo.setSituacao("Devolvido");
 
         emprestimoRepository.save(emprestimo);
 
@@ -64,7 +87,6 @@ public class EmprestimoService {
         emprestimo.setLivro(livro);
         LocalDate dataEmprestimo = LocalDate.now();
         emprestimo.setDataEmprestimo(dataEmprestimo);
-        emprestimo.setSituacao(emprestimoRequestDTO.situacao());
 
         emprestimoRepository.save(emprestimo);
 
