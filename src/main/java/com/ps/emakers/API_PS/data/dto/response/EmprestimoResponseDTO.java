@@ -3,7 +3,6 @@ package com.ps.emakers.API_PS.data.dto.response;
 
 import com.ps.emakers.API_PS.data.entity.Emprestimo;
 import com.ps.emakers.API_PS.data.entity.Livro;
-import com.ps.emakers.API_PS.data.entity.Pessoa;
 
 import java.time.LocalDate;
 
@@ -11,7 +10,7 @@ public record EmprestimoResponseDTO(
 
         Long id,
 
-        Pessoa pessoa,
+        PessoaResponseDTO pessoa,
 
         Livro livro,
 
@@ -20,6 +19,6 @@ public record EmprestimoResponseDTO(
         String situacao
 ) {
     public EmprestimoResponseDTO(Emprestimo emprestimo){
-        this(emprestimo.getIdEmprestimo(),emprestimo.getPessoa(),emprestimo.getLivro(),emprestimo.getDataEmprestimo(),emprestimo.getSituacao());
+        this(emprestimo.getIdEmprestimo(),new PessoaResponseDTO(emprestimo.getPessoa()),emprestimo.getLivro(),emprestimo.getDataEmprestimo(),emprestimo.getSituacao());
     }
 }

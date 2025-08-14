@@ -19,6 +19,18 @@ public class GeneralExceptionHandler{
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(EmprestimoReturnException.class)
+    private ResponseEntity<RestErrorMessage> EmprestimoReturnHandler(EmprestimoReturnException exception) {
+        RestErrorMessage error = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(LivroNotFoundException.class)
+    private ResponseEntity<RestErrorMessage> LivroNotFoundHandler(LivroNotFoundException exception) {
+        RestErrorMessage error = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<List<RestErrorMessage>> methodArgumentNotValidHandler(MethodArgumentNotValidException exception) {
         List<RestErrorMessage> erros = exception.getBindingResult().getFieldErrors()

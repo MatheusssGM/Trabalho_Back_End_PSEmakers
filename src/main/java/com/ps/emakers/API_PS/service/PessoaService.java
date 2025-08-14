@@ -19,7 +19,7 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     @Autowired
-    private EnderecoService enderecoService; // <-- Injete a dependência do novo serviço
+    private EnderecoService enderecoService;
 
     public List<PessoaResponseDTO> getAllPessoa(){
         List<Pessoa> Pessoas = pessoaRepository.findAll();
