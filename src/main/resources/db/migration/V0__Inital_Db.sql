@@ -32,6 +32,7 @@ CREATE TABLE pessoa
     email       VARCHAR(100)                            NOT NULL,
     name        VARCHAR(100)                            NOT NULL,
     senha       VARCHAR(100)                            NOT NULL,
+    role        VARCHAR(100) DEFAULT 'USER',
     CONSTRAINT pessoa_pkey PRIMARY KEY (id_pessoa)
 );
 

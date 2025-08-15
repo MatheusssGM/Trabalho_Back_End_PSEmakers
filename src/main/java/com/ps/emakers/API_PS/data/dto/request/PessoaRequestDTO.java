@@ -1,6 +1,7 @@
 package com.ps.emakers.API_PS.data.dto.request;
 
 
+import com.ps.emakers.API_PS.data.entity.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -19,7 +20,9 @@ public record PessoaRequestDTO(
         String email,
 
         @NotBlank(message = "Senha obrigatória")
-        String senha
-) {
+        String senha,
+
+        UserRole role
+){
 }
 

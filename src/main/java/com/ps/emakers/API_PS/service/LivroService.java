@@ -62,7 +62,7 @@ public class LivroService {
         Livro livro = getLivroEntityById(idLivro);
         livroRepository.delete(livro);
 
-        return "Livro id:" + idLivro + " deletado com sucesso!";
+        return "Livro id: " + idLivro + " deletado com sucesso!";
     }
 
     private Livro getLivroEntityById(Long idLivro){

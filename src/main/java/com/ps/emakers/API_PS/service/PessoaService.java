@@ -4,9 +4,12 @@ import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
 import com.ps.emakers.API_PS.data.dto.viacep.EnderecoViaCep;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
+import com.ps.emakers.API_PS.data.entity.UserRole;
+import com.ps.emakers.API_PS.exceptions.general.CepNotValidException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,14 +39,17 @@ public class PessoaService {
 
         Pessoa pessoa = new Pessoa(pessoaRequestDTO);
 
-        if (endereco != null) {
+        if (endereco.logradouro() != null) {
             pessoa.setLogradouro(endereco.logradouro());
             pessoa.setBairro(endereco.bairro());
             pessoa.setLocalidade(endereco.localidade());
             pessoa.setUf(endereco.uf());
         } else {
-            throw new IllegalArgumentException("CEP inválido ou não encontrado.");
+            throw new CepNotValidException("CEP inválido ou não encontrado.");
         }
+        String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
+        pessoa.setSenha(encryptedSenha);
+        pessoa.setRole(UserRole.USER);
         pessoaRepository.save(pessoa);
 
         return new PessoaResponseDTO(pessoa);
@@ -80,7 +86,7 @@ public class PessoaService {
         Pessoa pessoa = getPessoaEntityById(idPessoa);
         pessoaRepository.delete(pessoa);
 
-        return "Pessoa id:" + idPessoa + "deletado com sucesso!";
+        return "Pessoa id: " + idPessoa + " deletado com sucesso!";
     }
 
     private Pessoa getPessoaEntityById(Long idPessoa){

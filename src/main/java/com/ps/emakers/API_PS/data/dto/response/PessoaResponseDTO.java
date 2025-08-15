@@ -1,6 +1,7 @@
 package com.ps.emakers.API_PS.data.dto.response;
 
 import com.ps.emakers.API_PS.data.entity.Pessoa;
+import com.ps.emakers.API_PS.data.entity.UserRole;
 
 public record PessoaResponseDTO(
 
@@ -20,10 +21,11 @@ public record PessoaResponseDTO(
 
         String localidade,
 
-        String uf
+        String uf,
 
+        UserRole role
 ) {
     public PessoaResponseDTO(Pessoa pessoa) {
-        this(pessoa.getIdPessoa(), pessoa.getName(), pessoa.getCpf(), pessoa.getCep(), pessoa.getEmail(),pessoa.getLogradouro(), pessoa.getBairro(), pessoa.getLocalidade(),  pessoa.getUf());
+        this(pessoa.getIdPessoa(), pessoa.getName(), pessoa.getCpf(), pessoa.getCep(), pessoa.getEmail(),pessoa.getLogradouro(), pessoa.getBairro(), pessoa.getLocalidade(),  pessoa.getUf(),pessoa.getRole());
     }
 }
