@@ -1,6 +1,7 @@
 package com.ps.emakers.API_PS.data.entity; // O pacote agora reflete sua localização
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -16,7 +17,10 @@ public class UserAuthenticated implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        if (pessoa.getRole() == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(new SimpleGrantedAuthority(pessoa.getRole().name()));
     }
 
     @Override

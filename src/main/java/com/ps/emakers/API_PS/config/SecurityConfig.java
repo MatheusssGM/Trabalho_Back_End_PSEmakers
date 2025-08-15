@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,6 +27,7 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
@@ -42,23 +44,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/livro/all").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/livro/{idLivro}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/livro/create").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/livro/update/{idLivro}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/livro/delete/{idLivro}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/emprestimo/all").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/emprestimo/{idEmprestimo}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/emprestimo/createEmp").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/emprestimo/createDev/{idEmprestimo}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/emprestimo/update/{idEmprestimo}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/emprestimo/delete/{idEmprestimo}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/pessoa/all").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/pessoa/{idPessoa}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/pessoa/create").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/pessoa/update/{idPessoa}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/pessoa/changePassword").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/pessoa/delete/{idPessoa}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/livro/create").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/livro/update/{idLivro}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/livro/delete/{idLivro}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/emprestimo/update/{idEmprestimo}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/emprestimo/delete/{idEmprestimo}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/pessoa/create").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/pessoa/update/{idPessoa}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/pessoa/delete/{idPessoa}").hasAuthority("SCOPE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
