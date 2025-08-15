@@ -41,7 +41,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<PessoaResponseDTO> registerAdmin(@Valid @RequestBody PessoaRequestDTO pessoaRequestDTO){
-        return ResponseEntity.status(HttpStatus.OK).body(authenticantionService.registerAdmin(pessoaRequestDTO));
+    public ResponseEntity<PessoaResponseDTO> register(@Valid @RequestBody PessoaRequestDTO pessoaRequestDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(authenticantionService.register(pessoaRequestDTO));
     }
 }
