@@ -4,6 +4,7 @@ import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
 import com.ps.emakers.API_PS.data.dto.viacep.EnderecoViaCep;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
+import com.ps.emakers.API_PS.data.entity.UserRole;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +24,7 @@ public class AuthenticationService {
         this.jwtService = jwtService;
     }
 
-    public PessoaResponseDTO registerAdmin(PessoaRequestDTO pessoaRequestDTO){
+    public PessoaResponseDTO register(PessoaRequestDTO pessoaRequestDTO){
         EnderecoViaCep endereco = enderecoService.buscarEndereco(pessoaRequestDTO.cep());
 
         Pessoa pessoa = new Pessoa();
@@ -37,7 +38,7 @@ public class AuthenticationService {
         pessoa.setEmail(pessoaRequestDTO.email());
         String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
         pessoa.setSenha(encryptedSenha);
-        pessoa.setRole(pessoaRequestDTO.role());
+        pessoa.setRole(UserRole.USER);
 
         this.pessoaRepository.save(pessoa);
         return new PessoaResponseDTO(pessoa);

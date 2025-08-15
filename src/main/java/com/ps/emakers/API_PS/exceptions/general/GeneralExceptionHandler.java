@@ -41,7 +41,7 @@ public class GeneralExceptionHandler{
 
     @ExceptionHandler(CepNotValidException.class)
     private ResponseEntity<RestErrorMessage> illegalArgumentHandler(CepNotValidException exception) {
-        RestErrorMessage error = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        RestErrorMessage error = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

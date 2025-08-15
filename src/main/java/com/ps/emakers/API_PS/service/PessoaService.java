@@ -4,13 +4,14 @@ import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
 import com.ps.emakers.API_PS.data.dto.viacep.EnderecoViaCep;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
-import com.ps.emakers.API_PS.data.entity.UserRole;
 import com.ps.emakers.API_PS.exceptions.general.CepNotValidException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,12 @@ public class PessoaService {
 
     @Autowired
     private EnderecoService enderecoService;
+
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public PessoaService(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<PessoaResponseDTO> getAllPessoa(){
         List<Pessoa> Pessoas = pessoaRepository.findAll();
@@ -49,7 +56,7 @@ public class PessoaService {
         }
         String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
         pessoa.setSenha(encryptedSenha);
-        pessoa.setRole(UserRole.USER);
+        pessoa.setRole(pessoaRequestDTO.role());
         pessoaRepository.save(pessoa);
 
         return new PessoaResponseDTO(pessoa);
@@ -62,7 +69,7 @@ public class PessoaService {
             EnderecoViaCep endereco = enderecoService.buscarEndereco(pessoaRequestDTO.cep());
 
             if (endereco != null) {
-                pessoa.setCep(pessoaRequestDTO.cep()); // Atualiza o CEP
+                pessoa.setCep(pessoaRequestDTO.cep());
                 pessoa.setLogradouro(endereco.logradouro());
                 pessoa.setBairro(endereco.bairro());
                 pessoa.setLocalidade(endereco.localidade());
@@ -82,6 +89,23 @@ public class PessoaService {
         return new PessoaResponseDTO(pessoa);
     }
 
+
+    @PutMapping(value = "/changePassword")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public void changePassword(Long idPessoa, String currentPassword, String newPassword) {
+        Pessoa pessoa = pessoaRepository.findById(idPessoa)
+                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada."));
+
+        if (!passwordEncoder.matches(currentPassword, pessoa.getSenha())) {
+            throw new IllegalArgumentException("Senha atual incorreta.");
+        }
+
+        String encryptedNewPassword = passwordEncoder.encode(newPassword);
+
+        pessoa.setSenha(encryptedNewPassword);
+        pessoaRepository.save(pessoa);
+    }
+
     public String deletePessoa(Long idPessoa){
         Pessoa pessoa = getPessoaEntityById(idPessoa);
         pessoaRepository.delete(pessoa);
@@ -91,5 +115,9 @@ public class PessoaService {
 
     private Pessoa getPessoaEntityById(Long idPessoa){
         return pessoaRepository.findById(idPessoa).orElseThrow(()-> new EntityNotFoundException(idPessoa));
+    }
+    public Pessoa findByEmail(String email, Long idPessoa) {
+        return pessoaRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(idPessoa));
     }
 }
