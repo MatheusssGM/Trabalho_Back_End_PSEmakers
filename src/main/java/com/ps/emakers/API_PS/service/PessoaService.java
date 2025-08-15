@@ -4,7 +4,7 @@ import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
 import com.ps.emakers.API_PS.data.dto.viacep.EnderecoViaCep;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
-import com.ps.emakers.API_PS.exceptions.general.CepNotValidException;
+import com.ps.emakers.API_PS.exceptions.general.GeneralException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class PessoaService {
             pessoa.setLocalidade(endereco.localidade());
             pessoa.setUf(endereco.uf());
         } else {
-            throw new CepNotValidException("CEP inválido ou não encontrado.");
+            throw new GeneralException("CEP inválido ou não encontrado.");
         }
         String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
         pessoa.setSenha(encryptedSenha);
@@ -68,14 +68,14 @@ public class PessoaService {
         if (!pessoa.getCep().equals(pessoaRequestDTO.cep())) {
             EnderecoViaCep endereco = enderecoService.buscarEndereco(pessoaRequestDTO.cep());
 
-            if (endereco != null) {
+            if (endereco.logradouro() != null) {
                 pessoa.setCep(pessoaRequestDTO.cep());
                 pessoa.setLogradouro(endereco.logradouro());
                 pessoa.setBairro(endereco.bairro());
                 pessoa.setLocalidade(endereco.localidade());
                 pessoa.setUf(endereco.uf());
             } else {
-                throw new IllegalArgumentException("Novo CEP inválido ou não encontrado.");
+                throw new GeneralException("Novo CEP inválido ou não encontrado.");
             }
         }
 
@@ -94,10 +94,10 @@ public class PessoaService {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void changePassword(Long idPessoa, String currentPassword, String newPassword) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
-                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada."));
+                .orElseThrow(() -> new GeneralException("Pessoa não encontrada."));
 
         if (!passwordEncoder.matches(currentPassword, pessoa.getSenha())) {
-            throw new IllegalArgumentException("Senha atual incorreta.");
+            throw new GeneralException("Senha atual incorreta.");
         }
 
         String encryptedNewPassword = passwordEncoder.encode(newPassword);

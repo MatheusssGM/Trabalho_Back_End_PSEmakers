@@ -5,6 +5,7 @@ import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
 import com.ps.emakers.API_PS.data.dto.viacep.EnderecoViaCep;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
 import com.ps.emakers.API_PS.data.entity.UserRole;
+import com.ps.emakers.API_PS.exceptions.general.GeneralException;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,19 +28,18 @@ public class AuthenticationService {
     public PessoaResponseDTO register(PessoaRequestDTO pessoaRequestDTO){
         EnderecoViaCep endereco = enderecoService.buscarEndereco(pessoaRequestDTO.cep());
 
-        Pessoa pessoa = new Pessoa();
-        pessoa.setName(pessoaRequestDTO.name());
-        pessoa.setCpf(pessoaRequestDTO.cpf());
-        pessoa.setCep(pessoaRequestDTO.cep());
-        pessoa.setLogradouro(endereco.logradouro());
-        pessoa.setBairro(endereco.bairro());
-        pessoa.setLocalidade(endereco.localidade());
-        pessoa.setUf(endereco.uf());
-        pessoa.setEmail(pessoaRequestDTO.email());
+        Pessoa pessoa = new Pessoa(pessoaRequestDTO);
+        if (endereco.logradouro() != null) {
+            pessoa.setLogradouro(endereco.logradouro());
+            pessoa.setBairro(endereco.bairro());
+            pessoa.setLocalidade(endereco.localidade());
+            pessoa.setUf(endereco.uf());
+        } else {
+            throw new GeneralException("CEP inválido ou não encontrado.");
+        }
         String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
         pessoa.setSenha(encryptedSenha);
         pessoa.setRole(UserRole.USER);
-
         this.pessoaRepository.save(pessoa);
         return new PessoaResponseDTO(pessoa);
     }
