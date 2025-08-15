@@ -8,7 +8,6 @@ import com.ps.emakers.API_PS.exceptions.general.GeneralException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -82,7 +81,8 @@ public class PessoaService {
         pessoa.setName(pessoaRequestDTO.name());
         pessoa.setCpf(pessoaRequestDTO.cpf());
         pessoa.setEmail(pessoaRequestDTO.email());
-        pessoa.setSenha(pessoaRequestDTO.senha());
+        String encryptedSenha = new BCryptPasswordEncoder().encode(pessoaRequestDTO.senha());
+        pessoa.setSenha(encryptedSenha);
 
         pessoaRepository.save(pessoa);
 
@@ -91,7 +91,6 @@ public class PessoaService {
 
 
     @PutMapping(value = "/changePassword")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void changePassword(Long idPessoa, String currentPassword, String newPassword) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new GeneralException("Pessoa não encontrada."));
