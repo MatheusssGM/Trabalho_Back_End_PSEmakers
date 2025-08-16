@@ -7,7 +7,7 @@ import com.ps.emakers.API_PS.data.entity.Livro;
 import com.ps.emakers.API_PS.data.entity.Pessoa;
 import com.ps.emakers.API_PS.exceptions.general.EmprestimoReturnException;
 import com.ps.emakers.API_PS.exceptions.general.EntityNotFoundException;
-import com.ps.emakers.API_PS.exceptions.general.LivroNotFoundException;
+import com.ps.emakers.API_PS.exceptions.general.GeneralException;
 import com.ps.emakers.API_PS.repository.EmprestimoRepository;
 import com.ps.emakers.API_PS.repository.LivroRepository;
 import com.ps.emakers.API_PS.repository.PessoaRepository;
@@ -50,7 +50,7 @@ public class EmprestimoService {
         emprestimo.setLivro(livro);
 
         if (livro.getQuantidade() <= 0){
-            throw new LivroNotFoundException(livro.getIdLivro());
+            throw new GeneralException("Livro Esgotado");
         }
         livro.setQuantidade(livro.getQuantidade() - 1);
         livroRepository.save(livro);

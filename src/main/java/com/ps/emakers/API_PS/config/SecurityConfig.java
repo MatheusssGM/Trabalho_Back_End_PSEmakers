@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/livro/create").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/livro/update/{idLivro}").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/livro/delete/{idLivro}").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/emprestimo/createDev/{idEmprestimo}").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/emprestimo/update/{idEmprestimo}").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/emprestimo/delete/{idEmprestimo}").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/pessoa/create").hasAuthority("SCOPE_ADMIN")
