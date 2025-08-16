@@ -3,6 +3,7 @@ package com.ps.emakers.API_PS.controller;
 import com.ps.emakers.API_PS.data.dto.request.PessoaRequestDTO;
 import com.ps.emakers.API_PS.data.dto.response.LoginResponseDTO;
 import com.ps.emakers.API_PS.data.dto.response.PessoaResponseDTO;
+import com.ps.emakers.API_PS.exceptions.RestErrorMessage;
 import com.ps.emakers.API_PS.service.AuthenticationService;
 import com.ps.emakers.API_PS.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @Tag(name = "Authentication", description = "Endpoints relacionados à área de Authentication")
 @RestController
@@ -53,11 +56,16 @@ public class AuthenticationController {
     @PostMapping(value = "/login",
             consumes = "application/json",
             produces = "application/json")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody PessoaRequestDTO pessoaRequestDTO) {
-        var authToken = new UsernamePasswordAuthenticationToken(pessoaRequestDTO.email(), pessoaRequestDTO.senha());
-        Authentication auth = this.authenticationManager.authenticate(authToken);
-        var token = jwtService.generateToken(auth);
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+    public ResponseEntity<?> login(@RequestBody PessoaRequestDTO pessoaRequestDTO) {
+        try {
+            var authToken = new UsernamePasswordAuthenticationToken(pessoaRequestDTO.email(), pessoaRequestDTO.senha());
+            Authentication auth = this.authenticationManager.authenticate(authToken);
+            var token = jwtService.generateToken(auth);
+            return ResponseEntity.ok(new LoginResponseDTO(token));
+        } catch (AuthenticationException e) {
+            RestErrorMessage error = new RestErrorMessage(HttpStatus.UNAUTHORIZED, "Credenciais de login inválidas.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
     }
 
     @Operation(summary = "Registra um usuário no sistema",
